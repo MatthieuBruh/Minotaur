@@ -10,10 +10,8 @@ def find_path(tiles, start, goal):
 
     while queue:
         current = queue.popleft()
-
         if current == goal:
             break
-
         x, y = current
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             nx, ny = x + dx, y + dy

@@ -7,15 +7,15 @@ from utils.GifClass import AnimatedGIF
 from utils.image_button import ImageButton
 
 
-def play_level(rootWindow, level):
+def play_level(root_window, level):
     """
     Fonction utilisée lorsque le joueur clic sur une image-bouton représentant un niveau.
     → Ouvre la fenêtre du niveau pour que le joueur puisse commencer la partie.
-    :param rootWindow: fenêtre mère
+    :param root_window: Fenêtre mère
     :param level: niveau sélectionné par le joueur
     :return: NONE
     """
-    GameWindow(root=rootWindow, level_path=level.get_txt_path())
+    GameWindow(root=root_window, level_path=level.get_txt_path())
 
 
 class GameMenu(Frame):
@@ -38,7 +38,7 @@ class GameMenu(Frame):
 
     def manage_window_info(self):
         """
-        Fonction utilisée pour configurer les informations générales de la fenêtre, comme le titre et l'icône.
+        Méthode utilisée pour configurer les informations générales de la fenêtre, comme le titre et l'icône.
         :return: NONE
         """
         self._root.title("Minotaur game")
@@ -46,7 +46,7 @@ class GameMenu(Frame):
 
     def manage_window_size(self):
         """
-        Fonction utilisée pour configurer la taille de la fenêtre par rapport à la taille de l'écran.
+        Méthode utilisée pour configurer la taille de la fenêtre par rapport à la taille de l'écran.
         La fenêtre prend le 2/3 de l'écran et est positionné au centre de l'écran
         :return: NONE
         """
@@ -61,7 +61,7 @@ class GameMenu(Frame):
 
     def manage_paned(self):
         """
-        Fonction utilisée pour créer et organiser la fenêtre en deux sections principales.
+        Méthode utilisée pour créer et organiser la fenêtre en deux sections principales.
         1 section : titre et GIF d'un minotaure animé (1/3 de la hauteur)
         2 section : liste des niveaux (2/3 de la hauteur)
         :return: NONE
@@ -93,7 +93,7 @@ class GameMenu(Frame):
 
     def display_levels(self, paned_levels: PanedWindow):
         """
-        Fonction permettant d'afficher les niveaux sous forme d'image-bouton et de les organiser proprement.
+        Méthode permettant d'afficher les niveaux sous forme d'image-bouton et de les organiser proprement.
         :param paned_levels: PanedWindows qui va contenir la liste des niveaux
         :return: NONE
         """

@@ -1,8 +1,10 @@
 from domain.tile import Tile
 
 class Player(Tile):
-    def __init__(self, image):
-        super().__init__(image)
+    _image_path = "./ressources/images/player.png"
+
+    def __init__(self):
+        super().__init__()
         self.x = 0
         self.y = 0
 
