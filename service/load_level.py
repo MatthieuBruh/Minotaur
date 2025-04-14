@@ -6,7 +6,7 @@ from domain.level import Level
 
 def get_levels(levels_dir: str):
     """
-    Procédure permettant de retourner une liste de niveaux par rapports aux fichiers .txt d'un répertoire.
+    Fonction permettant de retourner une liste de niveaux par rapports aux fichiers .txt d'un répertoire.
     :param levels_dir: Répertoire dans lequel on va chercher les .txt des niveaux.
     :return: une liste des niveaux.
     """
