@@ -1,15 +1,16 @@
-from tkinter import Tk, Frame, PhotoImage, PanedWindow, Label
+from tkinter import Tk, Frame, PhotoImage, PanedWindow, Label, Toplevel, Button
 from tkinter.constants import HORIZONTAL
 
+import ressources.rules
 from game_play import GameWindow
 from service.load_level import get_levels
 from utils.GifClass import AnimatedGIF
 from utils.image_button import ImageButton
-
+from ressources.rules import RULES
 
 def play_level(root_window, level):
     """
-    Fonction utilisée lorsque le joueur clic sur une image-bouton représentant un niveau.
+    Procédure utilisée lorsque le joueur clic sur une image-bouton représentant un niveau.
     → Ouvre la fenêtre du niveau pour que le joueur puisse commencer la partie.
     :param root_window: Fenêtre mère
     :param level: niveau sélectionné par le joueur
@@ -17,6 +18,24 @@ def play_level(root_window, level):
     """
     GameWindow(root=root_window, level_path=level.get_txt_path())
 
+def show_rules(root_window):
+    """
+    Procédure utilisée pour afficher les règles du jeu sous forme de Modal.
+    :param root_window: Fenêtre parent du Modal.
+    :return: NONE
+    """
+    modal = Toplevel(root_window)
+    modal.title("Minotaur - rules")
+    modal_width = (root_window.winfo_width() * 2) // 3
+    modal_height = (root_window.winfo_height() * 2) // 3
+    position_x = root_window.winfo_x() + (root_window.winfo_width() // 2) - (modal_width // 2)
+    position_y = root_window.winfo_y() + (root_window.winfo_height() // 2) - (modal_height // 2)
+    modal.geometry(f"{modal_width}x{modal_height}+{position_x}+{position_y}")
+    modal.transient(root_window)
+    modal.grab_set()
+    Label(modal, text=RULES, font=("Arial", 12), justify="left").pack(pady=20)
+    Button(modal, text="Close", command=modal.destroy).pack(pady=10)
+    root_window.wait_window(modal)
 
 class GameMenu(Frame):
     """
@@ -83,6 +102,8 @@ class GameMenu(Frame):
         # Animation GIF du minotaure
         gif_widget = AnimatedGIF(title_frame, "./ressources/images/game_menu/minotaur.gif")
         gif_widget.grid(row=0, column=1, padx=20, pady=10, sticky="w")
+        button_modal = Button(title_frame, text="Game rules", bg="green", fg="orange", font=("Arial", 12), command=lambda: show_rules(self._root))
+        button_modal.grid(row=1, column=0, padx=80, sticky="e")
         # Ajout du cadre complet au PanedWindow
         self._root.paned_title.add(title_frame)
 
