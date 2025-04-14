@@ -36,8 +36,11 @@ class ImageButton(Button):
         if new_width > 0 and new_height > 0:
             resized_image = self.original_image.resize((new_width, new_height), Image.LANCZOS)
             draw = ImageDraw.Draw(resized_image)
-            font_size = new_width // 12
-            font = ImageFont.truetype("arial.ttf", font_size)
+            try:
+                font_size = new_width // 8
+                font = ImageFont.truetype("arial.ttf", font_size)
+            except:
+                font = ImageFont.load_default()
 
             # Permet de connaitre la taille de la bounding box
             bbox = draw.textbbox((0, 0), self.label_text, font=font)
