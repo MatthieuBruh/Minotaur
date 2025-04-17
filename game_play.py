@@ -57,6 +57,8 @@ class GameWindow(Toplevel):
 
         self.start_button = Button(self, text="Start", font=("Arial", 40), bg="green", fg="red", command=self.start_game)
         self.start_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.bind("<Return>", lambda event: self.start_game())
+        self.canvas.focus_set()
 
     def load_level(self, level_path):
         """
