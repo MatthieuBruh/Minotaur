@@ -3,6 +3,8 @@ import glob
 
 from domain.level import Level
 
+mandatory_elements = ["#", "-", ".", "@", "$"]
+unique_elements = [".", "@", "$"]
 
 def get_levels(levels_dir: str):
     """
@@ -24,5 +26,32 @@ def get_levels(levels_dir: str):
 
         if not os.path.isfile(png_path):
             continue
+
+        if not check_validity(txt_path):
+            continue
+
         levels.append(Level(base_name, txt_path.split('.txt')[0]))
     return levels
+
+def check_validity(path) -> bool:
+    """
+    Fonction utilisée pour vérifier la validité du niveau.
+    Vérification que le fichier contienne bien les éléments obligatoires et un seul Minotaure, sortie et joueur.
+    :param path: chemin du fichier à vérifier.
+    :return: renvoie un booléen si le niveau est valide ou non
+    """
+
+    with open(path, "r") as file:
+        content = file.read()
+
+    # Vérification de la présence des éléments obligatoires
+    for element in mandatory_elements:
+        if element not in content:
+            return False
+
+    # Vérification d'unicité du Minotaure, joueur et de sortie
+    for unique_el in unique_elements:
+        if content.count(unique_el) != 1:
+            print("Missing :", unique_el, "in file :", path)
+            return False
+    return True
