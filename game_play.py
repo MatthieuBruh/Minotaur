@@ -1,12 +1,13 @@
+import time
 from tkinter import Toplevel, Canvas, Label, Button
+
+from domain.bush import Bush
 from domain.exit import Exit
 from domain.exitWithPlayer import ExitWithPlayer
 from domain.floor import Floor
 from domain.minotaur import Minotaur
 from domain.player import Player
-from domain.bush import Bush
 from service.pathfinder import find_path
-import time
 
 TILE_SIZE = 32  # Taille d'une tuile en pixels
 
@@ -18,16 +19,19 @@ class GameWindow(Toplevel):
     Gère de manière générale le déroulement du jeu.
     """
 
-    def __init__(self, root, level_path):
+    def __init__(self, root, level_path, timer_limit):
         """
         Constructeur de la classe GameWindow
         :param root: fenêtre parent à laquelle on sera rattaché.
         :param level_path: Niveau choisit par l'utilisateur dans le menu.
+        :param timer_limit: Temps maximal pour le timer choisit par l'utilisateur.
         """
         super().__init__(root)
         self.title("Minotaur - play")
         self.attributes("-fullscreen", True)
         self.configure(bg="green")
+        self.start_time = None
+        self.timer_limit = timer_limit
         # Canvas du jeu
         self.canvas = Canvas(self, bg="green")
         self.canvas.pack(fill="both", expand=True)
@@ -106,7 +110,6 @@ class GameWindow(Toplevel):
         self.bind("<Right>", lambda e: self.move_player(1, 0))
         self.focus_set()
 
-        self.time_limit = 20
         self.start_time = time.time()
         self.update_timer()
 
@@ -120,7 +123,7 @@ class GameWindow(Toplevel):
             return
 
         elapsed = time.time() - self.start_time
-        remaining = max(0, self.time_limit - elapsed)
+        remaining = max(0, self.timer_limit.get() - elapsed)
 
         minutes = int(remaining // 60)
         seconds = int(remaining % 60)
@@ -167,8 +170,8 @@ class GameWindow(Toplevel):
         """
         Méthode utilisée pour déplacer le joueur sur la carte.
         Comprend les vérifications :
-            - Limites de la carte
-            - Tile peut être marché par le joueur
+            * Limites de la carte
+            * Tile peut être marché par le joueur
                 - Si oui, on déplace et vérifie que si la destination est la tile correspond à la sortie
                 - Sinon, on déplace le minotaure
         :param dx: Déplacement en direction de l'axe des X

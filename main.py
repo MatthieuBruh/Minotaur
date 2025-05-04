@@ -1,27 +1,28 @@
-from tkinter import Tk, Frame, PhotoImage, PanedWindow, Label, Toplevel, Button
+from tkinter import Tk, Frame, PhotoImage, PanedWindow, Label, Toplevel, Button, Spinbox, IntVar
 from tkinter.constants import HORIZONTAL
 
-import ressources.rules
 from game_play import GameWindow
+from ressources.rules import RULES
 from service.load_level import get_levels
 from utils.GifClass import AnimatedGIF
 from utils.image_button import ImageButton
-from ressources.rules import RULES
 
-def play_level(root_window, level):
+
+def play_level(root_window, level, max_timer):
     """
     Procédure utilisée lorsque le joueur clic sur une image-bouton représentant un niveau.
     → Ouvre la fenêtre du niveau pour que le joueur puisse commencer la partie.
     :param root_window: Fenêtre mère
     :param level: niveau sélectionné par le joueur
+    :param max_timer: temps maximal pour la partie
     :return: NONE
     """
-    GameWindow(root=root_window, level_path=level.get_txt_path())
+    GameWindow(root=root_window, level_path=level.get_txt_path(), timer_limit=max_timer)
 
 def show_rules(root_window):
     """
     Procédure utilisée pour afficher les règles du jeu sous forme de Modal.
-    :param root_window: Fenêtre parent du Modal.
+    :param root_window: Fenêtre parente du Modal.
     :return: NONE
     """
     modal = Toplevel(root_window)
@@ -51,6 +52,7 @@ class GameMenu(Frame):
         Frame.__init__(self, root)
         self._root = root
         self._root.title("Game Menu")
+        self.max_timer = IntVar(value=20)
         self.manage_window_size()
         self.manage_window_info()
         self.manage_paned()
@@ -81,33 +83,46 @@ class GameMenu(Frame):
     def manage_paned(self):
         """
         Méthode utilisée pour créer et organiser la fenêtre en deux sections principales.
-        1 section : titre et GIF d'un minotaure animé (1/3 de la hauteur)
-        2 section : liste des niveaux (2/3 de la hauteur)
+        Section 1 : titre et GIF d'un minotaure animé (1/3 de la hauteur)
+        Section 2 : liste des niveaux (2/3 de la hauteur)
         :return: NONE
         """
         one_third_height = self._root.window_height // 4
         two_third_height = self._root.window_height - one_third_height
 
-        # 1 section - titre + GIF
+        # Section 1 - titre + GIF
         self._root.paned_title = PanedWindow(self._root, orient=HORIZONTAL, height=one_third_height, bd=0)
         self._root.paned_title.pack(fill="x")
+
         # Conteneur centré pour le titre et le GIF
         title_frame = Frame(self._root.paned_title, bg="green")
         title_frame.grid_rowconfigure(0, weight=1)
         title_frame.grid_columnconfigure(0, weight=1)
         title_frame.grid_columnconfigure(1, weight=1)
+
         # Label du titre du jeu
         p1_label = Label(title_frame, text="The Minotaur", bg="green", fg="black", font=("Arial", 40))
         p1_label.grid(row=0, column=0, padx=20, pady=10, sticky="e")
         # Animation GIF du minotaure
         gif_widget = AnimatedGIF(title_frame, "./ressources/images/game_menu/minotaur.gif")
         gif_widget.grid(row=0, column=1, padx=20, pady=10, sticky="w")
-        button_modal = Button(title_frame, text="Game rules", bg="green", fg="orange", font=("Arial", 12), command=lambda: show_rules(self._root))
-        button_modal.grid(row=1, column=0, padx=80, sticky="e")
+
+        # Sous-cadre pour centrer les deux widgets côte à côte
+        controls_frame = Frame(title_frame, bg="green")
+        controls_frame.grid(row=1, column=0, columnspan=2)
+
+        # Bouton et Spinbox dans ce sous-cadre
+        button_modal = Button(controls_frame, text="Game rules", bg="green", fg="orange", font=("Arial", 16),
+                              command=lambda: show_rules(self._root))
+        spin_description = Label(controls_frame, text="| Temps maximal :", bg="green", fg="black", font=("Arial", 20))
+        spinbox = Spinbox(controls_frame, width=10, from_=10, to=60, textvariable=self.max_timer, bg="green", fg="black", font=("Arial", 16))
+        button_modal.pack(side="left", padx=10)
+        spin_description.pack(side="left", padx=10)
+        spinbox.pack(side="left", padx=10)
         # Ajout du cadre complet au PanedWindow
         self._root.paned_title.add(title_frame)
 
-        # 2 section - liste des niveaux
+        # Section 2 - liste des niveaux
         self._root.paned_levels = PanedWindow(self._root, orient=HORIZONTAL, height=two_third_height, bd=0)
         self._root.paned_levels.pack(fill="both", expand=True)
         self.display_levels(self._root.paned_levels)
@@ -131,7 +146,7 @@ class GameMenu(Frame):
                 grid_frame,
                 image_path=level.get_png_path(),
                 label_text=level.get_name(),
-                command=lambda lvl=level: play_level(self._root, lvl)
+                command=lambda lvl=level: play_level(self._root, lvl, self.max_timer)
             )
             img_button.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
             grid_frame.grid_columnconfigure(col, weight=1)
