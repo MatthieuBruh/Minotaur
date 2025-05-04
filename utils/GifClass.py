@@ -1,5 +1,7 @@
 from tkinter import Label, Image
+
 from PIL import Image, ImageTk, ImageSequence
+
 
 # Stackoverflow
 class AnimatedGIF(Label):
