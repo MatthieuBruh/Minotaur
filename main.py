@@ -27,6 +27,8 @@ def show_rules(root_window):
     """
     modal = Toplevel(root_window)
     modal.title("Minotaur - rules")
+    modal.iconphoto(False, PhotoImage(file="./ressources/images/game_menu/minotaur.png"))
+
     modal_width = (root_window.winfo_width() * 2) // 3
     modal_height = (root_window.winfo_height() * 2) // 3
     position_x = root_window.winfo_x() + (root_window.winfo_width() // 2) - (modal_width // 2)
@@ -34,8 +36,10 @@ def show_rules(root_window):
     modal.geometry(f"{modal_width}x{modal_height}+{position_x}+{position_y}")
     modal.transient(root_window)
     modal.grab_set()
-    Label(modal, text=RULES, font=("Arial", 12), justify="left").pack(pady=20)
+
+    Label(modal, text=RULES, font=("Arial", 11), justify="left", wraplength=modal_width-10).pack(pady=20)
     Button(modal, text="Close", command=modal.destroy).pack(pady=10)
+    modal.bind("<Escape>", lambda event: modal.destroy())
     root_window.wait_window(modal)
 
 class GameMenu(Frame):
@@ -114,7 +118,7 @@ class GameMenu(Frame):
         # Bouton et Spinbox dans ce sous-cadre
         button_modal = Button(controls_frame, text="Game rules", bg="green", fg="orange", font=("Arial", 16),
                               command=lambda: show_rules(self._root))
-        spin_description = Label(controls_frame, text="| Temps maximal :", bg="green", fg="black", font=("Arial", 20))
+        spin_description = Label(controls_frame, text="| Timer:", bg="green", fg="black", font=("Arial", 20))
         spinbox = Spinbox(controls_frame, width=10, from_=10, to=60, textvariable=self.max_timer, bg="green", fg="black", font=("Arial", 16))
         button_modal.pack(side="left", padx=10)
         spin_description.pack(side="left", padx=10)
